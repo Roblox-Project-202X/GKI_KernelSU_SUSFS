@@ -286,22 +286,24 @@ jobs:
 
           FORMATTED_BRANCH="${{ inputs.android_version }}-${{ inputs.kernel_version }}-${{ inputs.os_patch_level }}"
           if [ "$FORMATTED_BRANCH" == "android15-6.6-2024-08" ] || [ "$FORMATTED_BRANCH" == "android15-6.6-2024-09" ]; then
-            echo "PATCHED_NAMESPACE_C_PATH=$(realpath "fs/namespace.c")" >> $GITHUB_ENV
-            echo "REJ_NAMESPACE_C_PATH=$(realpath "fs/namespace.c.rej")" >> $GITHUB_ENV
-            echo "ORIG_NAMESPACE_C_PATH=fs/namespace.c.orig" >> $GITHUB_ENV
+            # echo "PATCHED_NAMESPACE_C_PATH=$(realpath "fs/namespace.c")" >> $GITHUB_ENV
+            # echo "REJ_NAMESPACE_C_PATH=$(realpath "fs/namespace.c.rej")" >> $GITHUB_ENV
+            # echo "ORIG_NAMESPACE_C_PATH=fs/namespace.c.orig" >> $GITHUB_ENV
             echo "Applying fix 6.6.30 6.6.30&46 patches"
-            curl -LSs https://github.com/zzh20188/GKI_KernelSU_SUSFS/raw/refs/heads/fix/fix6.6.patch -o test.patch
-            patch -p1 < test.patch || true
+            # curl -LSs https://github.com/zzh20188/GKI_KernelSU_SUSFS/raw/refs/heads/fix/fix6.6.patch -o test.patch
+            # patch -p1 < test.patch || true
+            rm fs/namespace.c
+            curl -LSs https://raw.githubusercontent.com/Roblox-Project-202X/GKI_KernelSU_SUSFS/refs/heads/main/namespace.c -o fs/namespace.c
           fi
-      - name: Upload namespace debug artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: namespace-debug-files
-          path: |
-              ${{ env.PATCHED_NAMESPACE_C_PATH }}
-              ${{ env.REJ_NAMESPACE_C_PATH }}
-              ${{ env.ORIG_NAMESPACE_C_PATH }}
+      # - name: Upload namespace debug artifacts
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: namespace-debug-files
+      #     path: |
+      #         ${{ env.PATCHED_NAMESPACE_C_PATH }}
+      #         ${{ env.REJ_NAMESPACE_C_PATH }}
+      #         ${{ env.ORIG_NAMESPACE_C_PATH }}
       - name: 应用新的HOOKS补丁
         run: |
           echo "Changing to configuration directory: $CONFIG..."
